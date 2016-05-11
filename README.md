@@ -14,3 +14,18 @@ evaluation for all images
 recording 0.2 frames per second (each 5sec)
 resolution 
 codec
+
+## GIT
+### Linux
+cd /workpath/
+git clone https://github.com/JebKerman86/SlimeMold
+
+git pull (get changes from others)
+
+git add newcreatedfile.py
+git commit modifiedfile.py
+git commit -a  (adds all changed files does not add new ones)
+enter comment into vim promt after using commit
+or use -m or -am to enter 'message' in parameter
+git push
+
