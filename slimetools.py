@@ -78,14 +78,15 @@ def readColorImage(path):
     
 def readGreyImage(path):
     """
-    returns Image object from PythonImageLibrary 
-    and a Numpyarray with greyscales from given relativ path <String>
+    maybe no need cause of plt.imageread() seems to do the same.
+    returns (Image object from PythonImageLibrary 
+    and) a Numpyarray with greyscales from given relativ path <String>
     """
     im_obj = img.open(path) #open image file
     im_array = np.array(im_obj) #image as array (for color[row[pix[r,g,b]]])
     #if np.array dim 3 print error
     #im_grey = np.mean(im_color, axis=2) #durchschnitt nicht "echter" grauwert
-    return im_obj, im_array
+    return im_array
     
     
     
