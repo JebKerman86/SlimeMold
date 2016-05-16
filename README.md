@@ -3,6 +3,11 @@ Image processing and evaluation programs for physics lab on slime molds.
 
 ## Update
 Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert einfach und gut allerdings verschwimmt das bild dadurch mit dem kleinen rest der da oben am mikroplasmoid dranhängt und das wird im binärbild eine fläche. Daher versuche ich nochmal das exakte bild auszuwerten und ne gescheite funktion zu basteln die das in den griff kriegt.
+Matlab befehl umd zusammenhängende flächen als matrizen mit koords der pixel auszugeben: bwconncomp
+Mögliche python alternative scipy.label
+opencv installiert 
+import cv2 bietet mediablurr vlt. besser als gauss ausprobieren
+
 
 ## TODO
 - upload actual content
@@ -15,8 +20,7 @@ Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert
 
 ## NOTES
 recording 0.2 frames per second (each 5sec)
-resolution 
-codec
+
 
 ## GIT
 ### Commandline

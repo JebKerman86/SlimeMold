@@ -11,6 +11,9 @@ Created on Thu Apr 28 10:59:11 2016
 import numpy as np #numeric calculations
 import matplotlib.pyplot as plt #figures and plots
 from PIL import Image as img #image objects
+from PIL import ImageFilter as imgf #image filters gauss and median
+import scipy.ndimage as ndimg #image tools like gaussian filter auch in PIL
+import cv2
 
 
 #------------------ Functions ------------------#
@@ -101,40 +104,66 @@ def readGreyImage(path):
     #im_grey = np.mean(im_color, axis=2) #durchschnitt nicht "echter" grauwert
     return im_array
     
-    
-    
+def smooth(img, usefilter, gaussian, medianblock):
+    """
+    filters given image <array> by given parameter usefilter <string>
+    possible filters: gauss, median, none
+    returns array
+    """
+    if usefilter=='gauss':
+        filtered = ndimg.gaussian_filter(img, sigma=(gaussian,gaussian))
+    elif usefilter=='median':
+        filtered = cv2.medianBlur(img, medianblock)
+    elif usefilter=='none':
+        filtered = img
+    else: 
+        print('no filter '+usefilter+' available. Use gauss, median or none')
+        filtered = img #to avoid bugs
+    return filtered
+            
+            
 
-
-
-
-def kymograph(imArray,Start,R,Phi):
+def kymograph(imArray,start,r,phi):
     """
     requiers <np.array>
     origin on top left pixel of the image (y-axe)
     Koordinationsystem Ursprung oben links im Bild (Y-Axe Zeigt nach unten!!)
-    Input: Länge R(in Pixel), Richtung Phi (Winkel in degree)
+    Input: Länge r(in Pixel), Richtung phi (Winkel in degree)
     """
-    StepSize = 0.1
-    NumberOfSteps = R/StepSize
-    Phi = Phi * (2.0*np.pi) / 360.0
-    imDirection = np.array([np.cos(Phi),-np.sin(Phi)])*StepSize
+    stepSize = 0.1
+    numberOfSteps = r/stepSize
+    phi = phi * (2.0*np.pi) / 360.0
+    imDirection = np.array([np.cos(phi),-np.sin(phi)])*stepSize
     imSlice = []    
     imCoords_round_previous = [-1,-1]
-    for t in range(0,int(NumberOfSteps)):
-        imCoords = Start + imDirection*t
+    for t in range(0,int(numberOfSteps)):
+        imCoords = start + imDirection*t
         imCoords_round = np.round(imCoords,decimals=0)
         if (np.array_equiv(imCoords_round,imCoords_round_previous) == False and imCoords_round[0] > 0 and imCoords_round[1] > 0):
             print(imCoords_round)
             imSlice.append(imArray[imCoords_round[0],imCoords_round[1]])
             imCoords_round_previous = imCoords_round
              
-    NumberOfPixels = len(imSlice)
-    print("NumberOfPixels:  " + str(NumberOfPixels))
-    if(NumberOfPixels != 0):
-        AvgPixelDist = R/(NumberOfPixels-1)
-    return [imSlice,AvgPixelDist]
+    numberOfPixels = len(imSlice)
+    print("NumberOfPixels:  " + str(numberOfPixels))
+    if(numberOfPixels != 0):
+        avgPixelDist = r/(numberOfPixels-1)
+    else:
+        avgPixelDist = 0
+    return [imSlice,avgPixelDist]
 
 
+def fft2display(fft):
+    """
+    transforms a complex fourier transformed 2D array to displayable image
+    removes the first entry and use fftshift + abs()
+    returns displayable array
+    """
+    array=fft
+    array[0,0]=0
+    array=np.abs(np.fft.fftshift(array))
+    return array
+    
 
 
     
