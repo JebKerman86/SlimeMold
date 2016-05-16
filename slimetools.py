@@ -9,7 +9,7 @@ Created on Thu Apr 28 10:59:11 2016
 #------------------ Libraries ------------------#
 
 import numpy as np #numeric calculations
-import matplotlib.pyplot as plt #figures and plots
+#import matplotlib.pyplot as plt #figures and plots
 #from PIL import Image as img #image objects
 import scipy.ndimage as ndimg #image tools like gaussian filter auch in PIL
 
@@ -137,8 +137,9 @@ def kymograph(imArray,start,r,phi):
     for t in range(0,int(numberOfSteps)):
         imCoords = start + imDirection*t
         imCoords_round = np.round(imCoords,decimals=0)
-        if (np.array_equiv(imCoords_round,imCoords_round_previous) == False and imCoords_round[0] > 0 and imCoords_round[1] > 0):
-            print(imCoords_round)
+        if (np.array_equiv(imCoords_round,imCoords_round_previous) == False 
+        and imCoords_round[0] > 0 and imCoords_round[1] > 0):
+            #print(imCoords_round)
             imSlice.append(imArray[imCoords_round[0],imCoords_round[1]])
             imCoords_round_previous = imCoords_round
              

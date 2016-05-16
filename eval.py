@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt #figures and plots
 #from PIL import Image as img #image objects
 import slimetools as st #own functions defined in slimetools.py
 import scipy.ndimage as ndimg #image tools like gaussian filter
+from skimage import segmentation as seg #used for contour finding
+import skimage
+
 
 
 #------------------ Parameter ------------------#
@@ -20,9 +23,10 @@ offset = 200 #offset for threshold to seperate object from near noises
 gaussian = 2 #sigma in 2D for gaussian filter before binarization
 medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
-singleimagepath = 'first.tif' # path to single image for debugging
+singleimagepath = 'fourth.tif' # path to single image for debugging
 pxarea = 1 #area of 1px (depends on cam and optical setup)
 bitnorm = 2**16 # value/bitnorm for display in common 8bit greyscale image
+
 
 #------------------ Main ------------------#
 
@@ -44,12 +48,23 @@ binary_final = biggest_label == labels #mask makes only biggest area true
 area = sum(binary_final)*pxarea #sum over all entries = number of pixels
 com = ndimg.measurements.center_of_mass(binary_final)
 
-#kymograph
+#kymograph 
 kymograph = st.kymograph(image, com, 120, 0)[0]
 kymo_array = np.array(kymograph)
+"""
+kymograph muss alle punkte einer linie über die zeit plotten nicht statisch
+zb. als bild oder als animation von graphen (untauglich poster)
+stake oszillationsrichtung wählen (video) und dann durch alle bilder laufen
+lassen daten speichern anschließend plotten bildnr, r,intensität (farbe)
+"""
+
+#contour
+#skimage.measure.find_contour
+
 
 #------------------ Output ------------------#
 
+#binarization
 bin_figure= plt.figure()
 plt.subplot(231)
 image_pic = plt.imshow(image, cmap='pink')
@@ -61,8 +76,17 @@ plt.subplot(234)
 binary_pic = plt.imshow(binary, cmap='pink')
 plt.subplot(235)
 filled_pic = plt.imshow(binary_final, cmap='pink')
+center = plt.plot(com[0],com[1],marker='o', color='red')
+#plt.subplot(236)
+#con_poly = plt.contour(binary_final,1) #contour as polygon .getpath for coords
+bounds=seg.find_boundaries(binary_final)
+#bounds2=skimage.measure.find_contours(binary_final,2) 
+#read how to use find_contours: gives list of (x,y) coords of contour!
 
+plt.subplot(236)
+plt.imshow(bounds, cmap='pink')
 
+#kymograph
 kymo_figure= plt.figure()
 plt.subplot(211)
 plt.imshow(image, cmap='pink')
