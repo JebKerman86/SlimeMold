@@ -2,7 +2,7 @@
 Image processing and evaluation programs for physics lab on slime molds.
 
 ## Update
-Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert einfach und gut allerdings verschwimmt das bild dadurch mit dem kleinen rest der da oben am mikroplasmoid dranhängt und das wird im binärbild eine fläche. Daher versuche ich nochmal das exakte bild auszuwerten und ne gescheite funktion zu basteln die das in den griff kriegt.
+- Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert einfach und gut allerdings verschwimmt das bild dadurch mit dem kleinen rest der da oben am mikroplasmoid dranhängt und das wird im binärbild eine fläche. Daher versuche ich nochmal das exakte bild auszuwerten und ne gescheite funktion zu basteln die das in den griff kriegt.
 Mögliche python alternative scipy.label zu matlab bwconncomp
 scipy.ndimage enthält jedemenge image funktionen die ich intuitiver finde als opencv und PIL alles was ich gesehen hab lässte sich ersetzen
 auf image objects können wir ganz verzichten denke ich oder? anzeigen geht gut mit matplotlib siehe output in main und einlesen kann man direkt als array siehe erste zeile main
