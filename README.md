@@ -1,6 +1,9 @@
 # SlimeMold
 Image processing and evaluation programs for physics lab on slime molds.
 
+## Update
+Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert einfach und gut allerdings verschwimmt das bild dadurch mit dem kleinen rest der da oben am mikroplasmoid dranhängt und das wird im binärbild eine fläche. Daher versuche ich nochmal das exakte bild auszuwerten und ne gescheite funktion zu basteln die das in den griff kriegt.
+
 ## TODO
 - upload actual content
 - check coded functions

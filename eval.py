@@ -9,12 +9,16 @@ Dynamic and Structur Analyzation
 
 import numpy as np #numeric calculations
 import matplotlib.pyplot as plt #figures and plots
-from PIL import Image as img #image objects
+#from PIL import Image as img #image objects
 import slimetools as st #own functions defined in slimetools.py
 import scipy.ndimage as ndimg #image tools like gaussian filter
 
 #------------------ Parameter ------------------#
-threshold_offset = -100
+
+offset = +200 #offset for threshold to seperate object from near noises
+gaussian = 0 #sigma in 2D for gaussian filter before binarization
+
+
 #------------------ Main ------------------#
 
 image = plt.imread('first.tif') #reads image as array
@@ -25,10 +29,10 @@ image_fft = fft
 image_fft[0,0]=0
 image_fft=np.abs(np.fft.fftshift(fft))
 
-filtered = ndimg.gaussian_filter(image, sigma=(1,1))
+filtered = ndimg.gaussian_filter(image, sigma=(gaussian,gaussian))
 grad = st.grey2grad(image) #creates x-y-gradient from image array
-limit = st.grad2threshold(image,grad) #returns threshold for this image
-binary = st.grey2bin(image,limit) #returns a binary array
+limit = st.grad2threshold(filtered,grad) #returns threshold for this image
+binary = st.grey2bin(filtered,limit-offset) #returns a binary array
 
 
 #------------------ Output ------------------#
