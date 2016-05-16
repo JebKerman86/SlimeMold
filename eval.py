@@ -49,21 +49,19 @@ kymograph = st.kymograph(image, com, 120, 0)[0]
 kymo_array = np.array(kymograph)
 
 #------------------ Output ------------------#
-"""
+
 bin_figure= plt.figure()
 plt.subplot(231)
 image_pic = plt.imshow(image, cmap='pink')
 plt.subplot(232)
-binary_pic = plt.imshow(binary, cmap='pink')
-plt.subplot(233)
 fft_pic = plt.imshow(st.fft2display(fft), cmap='pink')
-plt.subplot(234)
+plt.subplot(233)
 filtered_pic = plt.imshow(filtered, cmap='pink')
+plt.subplot(234)
+binary_pic = plt.imshow(binary, cmap='pink')
 plt.subplot(235)
 filled_pic = plt.imshow(binary_final, cmap='pink')
-plt.subplot(236)
-kymo_graph = plt.plot(np.arange(len(kymo_array)),kymo_array)
-"""
+
 
 kymo_figure= plt.figure()
 plt.subplot(211)
