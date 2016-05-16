@@ -7,16 +7,19 @@ Matlab befehl umd zusammenhängende flächen als matrizen mit koords der pixel a
 Mögliche python alternative scipy.label
 opencv installiert 
 import cv2 bietet mediablurr vlt. besser als gauss ausprobieren
+PIL bietet auch die Filter evt. cv2 nicht nötig, werde ich dann wieder rausnehmen brauchst erstmal nicht installieren codec
+
 
 
 ## TODO
-- upload actual content
-- check coded functions
 - write main script for single image first.tif
 - beutify code and add comments
-- add missing functions
+- größte fläche füllen andere löschen
+- finish krymograph
+- finish other functions
 - evaluation for first.tif
 - evaluation for all images
+- plot importants beatiful
 
 ## NOTES
 recording 0.2 frames per second (each 5sec)

@@ -16,7 +16,7 @@ import cv2
 
 #------------------ Parameter ------------------#
 
-offset = +500 #offset for threshold to seperate object from near noises
+offset = 100 #offset for threshold to seperate object from near noises
 gaussian = 2 #sigma in 2D for gaussian filter before binarization
 medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
@@ -31,10 +31,13 @@ filtered = st.smooth(image, usefilter, gaussian, medianblock)
 grad = st.grey2grad(image) #creates x-y-gradient from image array
 limit = st.grad2threshold(filtered,grad) #returns threshold for this image
 binary = st.grey2bin(filtered,limit-offset) #returns a binary array
-#group areas
 binary_false = np.logical_not(binary) #invert logic make object true
 filled = ndimg.binary_fill_holes(binary_false) #fill holes in object and dirt
-labels = ndimg.measurements.label(filled)
+labels, count = ndimg.measurements.label(filled) #numerate areas and count them
+#find biggest area
+size = np.bincount(labels.ravel()) #apearance of each number, ravel makes 1D
+biggest_label = size[1:].argmax() + 1 #size[0]=background, number=index+1
+binary_final = biggest_label == labels #mask makes only biggest area true
 
 
 #------------------ Output ------------------#
@@ -49,5 +52,5 @@ fft_pic = plt.imshow(st.fft2display(fft), cmap='pink')
 plt.subplot(234)
 filtered_pic = plt.imshow(filtered, cmap='pink')
 plt.subplot(235)
-filled_pic = plt.imshow(filled, cmap='pink')
+filled_pic = plt.imshow(binary_final, cmap='pink')
 print('done')
