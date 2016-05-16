@@ -3,11 +3,14 @@ Image processing and evaluation programs for physics lab on slime molds.
 
 ## Update
 Habe nen gaussfilter aus dem Paket scipy.ndimage ausprobiert filter funktioniert einfach und gut allerdings verschwimmt das bild dadurch mit dem kleinen rest der da oben am mikroplasmoid dranhängt und das wird im binärbild eine fläche. Daher versuche ich nochmal das exakte bild auszuwerten und ne gescheite funktion zu basteln die das in den griff kriegt.
-Matlab befehl umd zusammenhängende flächen als matrizen mit koords der pixel auszugeben: bwconncomp
-Mögliche python alternative scipy.label
-opencv installiert 
-import cv2 bietet mediablurr vlt. besser als gauss ausprobieren
-PIL bietet auch die Filter evt. cv2 nicht nötig, werde ich dann wieder rausnehmen brauchst erstmal nicht installieren codec
+Mögliche python alternative scipy.label zu matlab bwconncomp
+scipy.ndimage enthält jedemenge image funktionen die ich intuitiver finde als opencv und PIL alles was ich gesehen hab lässte sich ersetzen
+auf image objects können wir ganz verzichten denke ich oder? anzeigen geht gut mit matplotlib siehe output in main und einlesen kann man direkt als array siehe erste zeile main
+dann sparen wir uns die nicht standard bibs. FFT hab ich jetz mit numpy gemacht steckt aber auch in scipy man muss scipy.fftpack allerdings seperat importieren da es nicht mit scipy mit importiert wird (zusatzbib)
+
+- hab dein kymographen die variablen klein geschrieben und paar kommentare gemacht kannste vlt. auch noch richtig auskommentieren, ich schreib in die info oben immer was fürn datentyp man reintut und was rauskommt, damit man zB gleich sieht, dass da nen array(array,pixelweite) rauskommt kein wunder dass ich den so nicht plotten konnte ;).
+
+- binarization hab ich fertig funzt echt nice auch flächen berechnung und schwerpunkt hab ich schon guck mal rein in die änderungen bevor es soviel wird, dass du die übersicht verlierst...
 
 
 

@@ -10,10 +10,8 @@ Created on Thu Apr 28 10:59:11 2016
 
 import numpy as np #numeric calculations
 import matplotlib.pyplot as plt #figures and plots
-from PIL import Image as img #image objects
-from PIL import ImageFilter as imgf #image filters gauss and median
+#from PIL import Image as img #image objects
 import scipy.ndimage as ndimg #image tools like gaussian filter auch in PIL
-import cv2
 
 
 #------------------ Functions ------------------#
@@ -104,21 +102,22 @@ def readGreyImage(path):
     #im_grey = np.mean(im_color, axis=2) #durchschnitt nicht "echter" grauwert
     return im_array
     
-def smooth(img, usefilter, gaussian, medianblock):
+def smooth(image, usefilter, gaussian, medianblock):
     """
     filters given image <array> by given parameter usefilter <string>
     possible filters: gauss, median, none
     returns array
     """
     if usefilter=='gauss':
-        filtered = ndimg.gaussian_filter(img, sigma=(gaussian,gaussian))
+        filtered = ndimg.gaussian_filter(image, sigma=(gaussian,gaussian))
     elif usefilter=='median':
-        filtered = cv2.medianBlur(img, medianblock)
+        filtered = ndimg.filters.median_filter(image, size=medianblock)
+        #filtered = cv2.medianBlur(img, medianblock)
     elif usefilter=='none':
-        filtered = img
+        filtered = image
     else: 
         print('no filter '+usefilter+' available. Use gauss, median or none')
-        filtered = img #to avoid bugs
+        filtered = image #to avoid bugs
     return filtered
             
             
@@ -127,10 +126,9 @@ def kymograph(imArray,start,r,phi):
     """
     requiers <np.array>
     origin on top left pixel of the image (y-axe)
-    Koordinationsystem Ursprung oben links im Bild (Y-Axe Zeigt nach unten!!)
-    Input: Länge r(in Pixel), Richtung phi (Winkel in degree)
+    Input: radius r(px)<int>, angle phi(deg)<fload>
     """
-    stepSize = 0.1
+    stepSize = 1 #changed to 1
     numberOfSteps = r/stepSize
     phi = phi * (2.0*np.pi) / 360.0
     imDirection = np.array([np.cos(phi),-np.sin(phi)])*stepSize
@@ -145,7 +143,7 @@ def kymograph(imArray,start,r,phi):
             imCoords_round_previous = imCoords_round
              
     numberOfPixels = len(imSlice)
-    print("NumberOfPixels:  " + str(numberOfPixels))
+    #print("NumberOfPixels:  " + str(numberOfPixels))
     if(numberOfPixels != 0):
         avgPixelDist = r/(numberOfPixels-1)
     else:
