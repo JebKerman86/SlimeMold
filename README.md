@@ -10,6 +10,7 @@ Image processing and evaluation programs for physics lab on slime molds.
 
 - binarization hab ich fertig funzt echt nice auch flächen berechnung und schwerpunkt hab ich schon guck mal rein in die änderungen bevor es soviel wird, dass du die übersicht verlierst...
 
+- contour hab ich erst aus ner extra image lib gemacht stört mich aber für eine einzige funktion ne lib zu importieren deshalb hab ich selbst eine geschrieben ist vlt. nicht die schnellste(for schleife) liefert aber schöne ergebnisse
 
 
 ## TODO
