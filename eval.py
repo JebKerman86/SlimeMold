@@ -60,6 +60,8 @@ lassen daten speichern anschließend plotten bildnr, r,intensität (farbe)
 
 #contour
 #skimage.measure.find_contour
+contour=st.find_contour(binary_final)
+contour=np.asarray(contour)
 
 
 #------------------ Output ------------------#
@@ -72,6 +74,7 @@ plt.subplot(232)
 fft_pic = plt.imshow(st.fft2display(fft), cmap='pink')
 plt.subplot(233)
 filtered_pic = plt.imshow(filtered, cmap='pink')
+plt.plot(contour[:,1],contour[:,0],linestyle='none',marker='.',color='red')
 plt.subplot(234)
 binary_pic = plt.imshow(binary, cmap='pink')
 plt.subplot(235)
@@ -79,12 +82,11 @@ filled_pic = plt.imshow(binary_final, cmap='pink')
 center = plt.plot(com[0],com[1],marker='o', color='red')
 #plt.subplot(236)
 #con_poly = plt.contour(binary_final,1) #contour as polygon .getpath for coords
-bounds=seg.find_boundaries(binary_final)
+#bounds=seg.find_boundaries(binary_final)
 #bounds2=skimage.measure.find_contours(binary_final,2) 
 #read how to use find_contours: gives list of (x,y) coords of contour!
-
-plt.subplot(236)
-plt.imshow(bounds, cmap='pink')
+#plt.subplot(236)
+#plt.imshow(bounds, cmap='pink')
 
 #kymograph
 kymo_figure= plt.figure()
@@ -93,4 +95,5 @@ plt.imshow(image, cmap='pink')
 plt.plot((com[0],com[0]+120),(com[1],com[1]), color='r', linewidth='2')
 plt.subplot(212)
 plt.plot(np.arange(len(kymo_array)),kymo_array, color='r')
+
 print('done')

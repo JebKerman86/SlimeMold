@@ -25,10 +25,34 @@ def findCenter(imArray):
     imCenter = np.array([imShape[0]/2,imShape[1]/2])
     return imCenter
     
-def gauss2d(shape=(3,3),sigma=0.5):
+def find_contour(binary):
+    """
+    returns a array of coords ((x1,y1),(x2,y2), ... ) of object pixels 
+    with 1 or more background pixels in 3x3 neighbourhood. req: binary image
+    """
+    coords = [] #declare list with dynamic length
+    #-2 length and +1 ignores pixel at the edge of image (doesnt matter)
+    for i in np.arange(len(binary)-2)+1:
+        for j in np.arange(len(binary[0])-2)+1:
+            if binary[i][j]: #if pixel = object
+            #if NOT one of 3x3=object == 1 or more neighbours are background
+                if not (binary[i-1][j-1] 
+                and binary[i-1][j]
+                and binary[i][j-1]
+                and binary[i+1][j]
+                and binary[i][j+1]
+                and binary[i+1][j+1]
+                and binary[i+1][j-1]
+                and binary[i-1][j+1]):
+                    coords.append((i,j))
+    return coords
+
+
+
+def gauss2d(shape=(3,3),sigma=0.5): #not used actually
     """
     2D gaussian mask - should give the same result as MATLAB's
-    fspecial('gaussian',[shape],[sigma])
+    fspecial('gaussian',[shape],[sigma]) 
     """
     m,n = [(ss-1.)/2. for ss in shape]
     y,x = np.ogrid[-m:m+1,-n:n+1]
@@ -119,9 +143,9 @@ def smooth(image, usefilter, gaussian, medianblock):
         print('no filter '+usefilter+' available. Use gauss, median or none')
         filtered = image #to avoid bugs
     return filtered
-            
-            
-
+        
+        
+  
 def kymograph(imArray,start,r,phi):
     """
     requiers <np.array>
@@ -136,7 +160,7 @@ def kymograph(imArray,start,r,phi):
     imCoords_round_previous = [-1,-1]
     for t in range(0,int(numberOfSteps)):
         imCoords = start + imDirection*t
-        imCoords_round = np.round(imCoords,decimals=0)
+        imCoords_round = np.round(imCoords,decimals=0) #convert to int pls
         if (np.array_equiv(imCoords_round,imCoords_round_previous) == False 
         and imCoords_round[0] > 0 and imCoords_round[1] > 0):
             #print(imCoords_round)
