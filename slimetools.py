@@ -45,6 +45,7 @@ def find_contour(binary):
                 and binary[i+1][j-1]
                 and binary[i-1][j+1]):
                     coords.append((i,j))
+    coords=np.asarray(coords)
     return coords
 
 
@@ -152,19 +153,23 @@ def kymograph(imArray,start,r,phi):
     origin on top left pixel of the image (y-axe)
     Input: radius r(px)<int>, angle phi(deg)<fload>
     """
-    stepSize = 1 #changed to 1
+    stepSize = 0.1 #changed to 1
     numberOfSteps = r/stepSize
     phi = phi * (2.0*np.pi) / 360.0
     imDirection = np.array([np.cos(phi),-np.sin(phi)])*stepSize
     imSlice = []    
-    imCoords_round_previous = [-1,-1]
+    #imCoords_round_previous = [-1,-1]
     for t in range(0,int(numberOfSteps)):
         imCoords = start + imDirection*t
-        imCoords_round = np.round(imCoords,decimals=0) #convert to int pls
+        imCoords_round = np.round(imCoords,decimals=0) #convert to int 
+        """
         if (np.array_equiv(imCoords_round,imCoords_round_previous) == False 
         and imCoords_round[0] > 0 and imCoords_round[1] > 0):
             #print(imCoords_round)
-            imSlice.append(imArray[imCoords_round[0],imCoords_round[1]])
+        """
+        imSlice.append(imArray[int(imCoords_round[0]),int(imCoords_round[1])])
+        print imSlice
+        """
             imCoords_round_previous = imCoords_round
              
     numberOfPixels = len(imSlice)
@@ -173,7 +178,8 @@ def kymograph(imArray,start,r,phi):
         avgPixelDist = r/(numberOfPixels-1)
     else:
         avgPixelDist = 0
-    return [imSlice,avgPixelDist]
+        """
+    return imSlice
 
 
 def fft2display(fft):

@@ -11,9 +11,7 @@ import numpy as np #numeric calculations
 import matplotlib.pyplot as plt #figures and plots
 #from PIL import Image as img #image objects
 import slimetools as st #own functions defined in slimetools.py
-import scipy.ndimage as ndimg #image tools like gaussian filter
-from skimage import segmentation as seg #used for contour finding
-import skimage
+import scipy.ndimage as ndimg #image tools filters and more
 
 
 
@@ -25,7 +23,7 @@ medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
 singleimagepath = 'fourth.tif' # path to single image for debugging
 pxarea = 1 #area of 1px (depends on cam and optical setup)
-bitnorm = 2**16 # value/bitnorm for display in common 8bit greyscale image
+bitnorm = 2**(-16) # value/bitnorm for display in common 8bit greyscale image
 
 
 #------------------ Main ------------------#
@@ -48,8 +46,11 @@ binary_final = biggest_label == labels #mask makes only biggest area true
 area = sum(binary_final)*pxarea #sum over all entries = number of pixels
 com = ndimg.measurements.center_of_mass(binary_final)
 
+#contour
+contour=st.find_contour(binary_final)
+
 #kymograph 
-kymograph = st.kymograph(image, com, 120, 0)[0]
+kymograph = st.kymograph(image, com, 120, 0)
 kymo_array = np.array(kymograph)
 """
 kymograph muss alle punkte einer linie über die zeit plotten nicht statisch
@@ -58,10 +59,7 @@ stake oszillationsrichtung wählen (video) und dann durch alle bilder laufen
 lassen daten speichern anschließend plotten bildnr, r,intensität (farbe)
 """
 
-#contour
-#skimage.measure.find_contour
-contour=st.find_contour(binary_final)
-contour=np.asarray(contour)
+
 
 
 #------------------ Output ------------------#
