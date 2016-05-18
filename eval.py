@@ -103,4 +103,4 @@ plt.plot((com[0],com[0]+120),(com[1],com[1]), color='r', linewidth='2')
 plt.subplot(212)
 plt.plot(np.arange(len(kymograph)),kymograph, color='r')
 """
-print('done')
+print('done') #lukas
