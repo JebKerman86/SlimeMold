@@ -104,3 +104,6 @@ plt.subplot(212)
 plt.plot(np.arange(len(kymograph)),kymograph, color='r')
 """
 print('done')
+
+
+#Eine Kommentar am Ende von Benjamin
