@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt #figures and plots
 #from PIL import Image as img #image objects
 import slimetools as st #own functions defined in slimetools.py
 import scipy.ndimage as ndimg #image tools filters and more
-
+import os #read and navigate filesystem
 
 
 #------------------ Parameter ------------------#
@@ -22,12 +22,16 @@ gaussian = 2 #sigma in 2D for gaussian filter before binarization
 medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
 singleimagepath = 'fourth.tif' # path to single image for debugging
+datapath = 'data' # relativ path to directory containing the .tif files
 pxarea = 1 #area of 1px (depends on cam and optical setup)
 bitnorm = 2**(-16) # value/bitnorm for display in common 8bit greyscale image
 
 
 #------------------ Main ------------------#
-
+"""
+Single File
+"""
+"""
 #general
 image = plt.imread(singleimagepath) #reads image as array
 fft = np.fft.fft2(image) #2D fourier transformed image
@@ -47,19 +51,24 @@ area = sum(binary_final)*pxarea #sum over all entries = number of pixels
 com = ndimg.measurements.center_of_mass(binary_final)
 
 #contour
-contour=st.find_contour(binary_final)
+contour=st.find_contour(binary_final) #pixel coords with >=1 false neighbours
 
 #kymograph 
 kymograph = st.kymograph(image, com, 120, 0)
-kymo_array = np.array(kymograph)
-"""
-kymograph muss alle punkte einer linie über die zeit plotten nicht statisch
-zb. als bild oder als animation von graphen (untauglich poster)
-stake oszillationsrichtung wählen (video) und dann durch alle bilder laufen
-lassen daten speichern anschließend plotten bildnr, r,intensität (farbe)
 """
 
-
+"""
+All Files
+"""
+for file in os.listdir(datapath):
+    if file.endswith('.tif'):
+        image = plt.imread(os.path.join('data',file)) #path cross platform
+    else:
+        continue
+    filtered = st.smooth(image, usefilter, gaussian, medianblock)
+    binary = st.binarify(image)
+    area = sum(binary)
+    
 
 
 #------------------ Output ------------------#
@@ -78,13 +87,7 @@ binary_pic = plt.imshow(binary, cmap='pink')
 plt.subplot(235)
 filled_pic = plt.imshow(binary_final, cmap='pink')
 center = plt.plot(com[0],com[1],marker='o', color='red')
-#plt.subplot(236)
-#con_poly = plt.contour(binary_final,1) #contour as polygon .getpath for coords
-#bounds=seg.find_boundaries(binary_final)
-#bounds2=skimage.measure.find_contours(binary_final,2) 
-#read how to use find_contours: gives list of (x,y) coords of contour!
-#plt.subplot(236)
-#plt.imshow(bounds, cmap='pink')
+
 
 #kymograph
 kymo_figure= plt.figure()
@@ -92,6 +95,6 @@ plt.subplot(211)
 plt.imshow(image, cmap='pink')
 plt.plot((com[0],com[0]+120),(com[1],com[1]), color='r', linewidth='2')
 plt.subplot(212)
-plt.plot(np.arange(len(kymo_array)),kymo_array, color='r')
+plt.plot(np.arange(len(kymograph)),kymograph, color='r')
 
 print('done')

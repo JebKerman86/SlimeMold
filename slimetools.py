@@ -64,7 +64,32 @@ def gauss2d(shape=(3,3),sigma=0.5): #not used actually
         h /= sumh
     return h
     
-def grey2grad(im_array):
+    
+def binarify(image):
+    """
+    requires a greyscale image<array> and threshold-offset-parameter<int>
+    transforms it to binary image using some analyzation and corrections.
+    create threshold via x,y-gradient: T=sum(img_ij*grad_ij)/sum(grad_ij)
+    """
+    gradient = grey2grad(image) #image gradient
+    # T=top/bot
+    bot=np.sum(gradient) #sum all elemts of gradient
+    top=0 #init numerator for loop
+    for i in range(image.shape[0]): #sum over all lines
+        top+=np.dot(image[i],gradient[i]) #add inner product of each line
+    limit=top/bot #calc the limit T
+    binary=np.greater(image,limit)
+    binary_false = np.logical_not(binary) #invert logic make object true
+    filled = ndimg.binary_fill_holes(binary_false) #fill holes in object and dirt
+    labels, count = ndimg.measurements.label(filled) #numerate areas and count them
+    size = np.bincount(labels.ravel()) #apearance of each number, ravel makes 1D
+    biggest_label = size[1:].argmax() + 1 #size[0]=background, number=index+1
+    binary_final = biggest_label == labels #mask makes only biggest area true
+    return binary_final
+    
+    
+    
+def grey2grad(im_array): #used from binarify
     """
     returns x and y gradient for given 2D <np.array>.
     Tested: Order of x- and y-gradient doesnt matter.
@@ -83,7 +108,7 @@ def grey2grad(im_array):
     return grad
 
 
-def grad2threshold(image,gradient):
+def grad2threshold(image,gradient): #in binarify
     """ 
     creates threshold for given grey-scale 
     image<array> and its gradient<array> in x and y direction.
@@ -99,33 +124,14 @@ def grad2threshold(image,gradient):
     return treshold
     
     
-def grey2bin(nparray, limit):
+def grey2bin(nparray, limit): #in binarify
     """transforms an array to booleans-array depending on the given limit"""
     bins = np.greater(nparray,limit)
     return bins
 
 
-def readColorImage(path):
-    """
-    returns Image object from PythonImageLibrary 
-    and a Numpyarray with average rgba from given relativ path <String>
-    """
-    im_obj = img.open(path) #open image file
-    im_array = np.mean(im_obj, axis=2) #average != 'real' grey value
-    return im_obj, im_array
-    
-    
-def readGreyImage(path):
-    """
-    maybe no need cause of plt.imageread() seems to do the same.
-    returns (Image object from PythonImageLibrary 
-    and) a Numpyarray with greyscales from given relativ path <String>
-    """
-    im_obj = img.open(path) #open image file
-    im_array = np.array(im_obj) #image as array (for color[row[pix[r,g,b]]])
-    #if np.array dim 3 print error
-    #im_grey = np.mean(im_color, axis=2) #durchschnitt nicht "echter" grauwert
-    return im_array
+
+
     
 def smooth(image, usefilter, gaussian, medianblock):
     """
@@ -142,7 +148,7 @@ def smooth(image, usefilter, gaussian, medianblock):
         filtered = image
     else: 
         print('no filter '+usefilter+' available. Use gauss, median or none')
-        filtered = image #to avoid bugs
+        filtered = image #to avoid error
     return filtered
         
         
@@ -151,34 +157,20 @@ def kymograph(imArray,start,r,phi):
     """
     requiers <np.array>
     origin on top left pixel of the image (y-axe)
+        #add the inner product of a line from image and gradient:
+        #add the inner product of a line from image and gradient:
     Input: radius r(px)<int>, angle phi(deg)<fload>
     """
-    stepSize = 0.1 #changed to 1
-    numberOfSteps = r/stepSize
-    phi = phi * (2.0*np.pi) / 360.0
-    imDirection = np.array([np.cos(phi),-np.sin(phi)])*stepSize
-    imSlice = []    
-    #imCoords_round_previous = [-1,-1]
-    for t in range(0,int(numberOfSteps)):
-        imCoords = start + imDirection*t
-        imCoords_round = np.round(imCoords,decimals=0) #convert to int 
-        """
-        if (np.array_equiv(imCoords_round,imCoords_round_previous) == False 
-        and imCoords_round[0] > 0 and imCoords_round[1] > 0):
-            #print(imCoords_round)
-        """
+    stepSize = 1 #changed to 1
+    numberOfSteps = r/stepSize #should be int
+    phi = phi * (2.0*np.pi) / 360.0 #transform to deg->rad
+    imDirection = np.array([np.cos(phi),-np.sin(phi)])*stepSize #step direction
+    imSlice = [] #declare list
+    for t in range(0,int(numberOfSteps)): #get for each step value from next px
+        imCoords = start + imDirection*t #current position
+        imCoords_round = np.round(imCoords,decimals=0) #round for next pixel
         imSlice.append(imArray[int(imCoords_round[0]),int(imCoords_round[1])])
-        print imSlice
-        """
-            imCoords_round_previous = imCoords_round
-             
-    numberOfPixels = len(imSlice)
-    #print("NumberOfPixels:  " + str(numberOfPixels))
-    if(numberOfPixels != 0):
-        avgPixelDist = r/(numberOfPixels-1)
-    else:
-        avgPixelDist = 0
-        """
+    imSlice=np.asarray(imSlice) #transform the list to numeric array
     return imSlice
 
 
