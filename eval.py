@@ -24,7 +24,8 @@ medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
 singleimagepath = 'fourth.tif' # path to single image for debugging
 datapath = 'data_test' # relativ path to directory containing the .tif files
-pxarea = 1 #area of 1px (depends on cam and optical setup)
+pxwidth = 6.45 #micrometer 10**(-6)
+pxarea = pxwidth**2 #area of 1px (depends on cam and optical setup)
 bitnorm = 2**(-16) # value/bitnorm for display in common 8bit greyscale image
 
 
@@ -59,10 +60,11 @@ kymograph = st.kymograph(image, com, 120, 0)
 """
 
 """
-All Files
+Evaluate All Files
 """
 dataList=[]
 #dataList[img1,2,3,...][area<float>,center<array,float>,coords<array2d,int>]
+##comment from here for only do eval step2
 for file in os.listdir(datapath):
     if file.endswith('.tif'):
         image = plt.imread(os.path.join('data',file)) #path cross platform
@@ -70,10 +72,21 @@ for file in os.listdir(datapath):
         binary = st.binarify(image) #binary: threshold, fill, remove specks
         area = sum(sum(binary))*pxarea #number of pixels*area of one pixel
         com = ndimg.measurements.center_of_mass(binary) #center of mass coords
-        contour=st.find_contour(binary) #pixel coords with false in 3x3
+        contour=st.find_contour(binary) #returns list of coords
         dataList.append([area,com,contour])
 
-dataList_json = json.dumps(dataList)
+#Safe Evaluation
+dataList_json = json.dumps(dataList) #convert to json string | dumps(tring)
+with open('data.json', 'w') as jfile:
+    json.dump(dataList, jfile) #dump wirte direct to file
+##end comment for dont do eval step1
+with open('data.json', 'r') as jfile: #read file
+    dataList=json.load(jfile)    #write datalist from file
+
+
+
+
+
 #------------------ Output ------------------#
 
 """

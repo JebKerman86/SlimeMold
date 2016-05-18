@@ -45,7 +45,7 @@ def find_contour(binary):
                 and binary[i+1][j-1]
                 and binary[i-1][j+1]):
                     coords.append((i,j))
-    coords=np.asarray(coords)
+    #coords=np.asarray(coords) #list better to safe in json
     return coords
 
 
