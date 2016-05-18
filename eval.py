@@ -60,15 +60,17 @@ kymograph = st.kymograph(image, com, 120, 0)
 """
 All Files
 """
+dataList=[]
 for file in os.listdir(datapath):
     if file.endswith('.tif'):
         image = plt.imread(os.path.join('data',file)) #path cross platform
-    else:
-        continue
-    filtered = st.smooth(image, usefilter, gaussian, medianblock)
-    binary = st.binarify(image)
-    area = sum(binary)
-    
+        filtered = st.smooth(image, usefilter, gaussian, medianblock)
+        binary = st.binarify(image) #binary: threshold, fill, remove specks
+        area = sum(binary)*pxarea #number of pixels*area of one pixel
+        com = ndimg.measurements.center_of_mass(binary) #center of mass coords
+        contour=st.find_contour(binary) #pixel coords with false in 3x3
+        dataList.append([area,com,contour])
+
 
 
 #------------------ Output ------------------#
