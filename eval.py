@@ -75,7 +75,10 @@ for file in os.listdir(datapath):
 
 dataList_json = json.dumps(dataList)
 #------------------ Output ------------------#
+
 """
+#Hier ist eine Änderung von Benjamin
+
 #binarization
 bin_figure= plt.figure()
 plt.subplot(231)
