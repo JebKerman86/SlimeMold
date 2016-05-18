@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt #figures and plots
 import slimetools as st #own functions defined in slimetools.py
 import scipy.ndimage as ndimg #image tools filters and more
 import os #read and navigate filesystem
+import json
 
 
 #------------------ Parameter ------------------#
@@ -22,7 +23,7 @@ gaussian = 2 #sigma in 2D for gaussian filter before binarization
 medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
 singleimagepath = 'fourth.tif' # path to single image for debugging
-datapath = 'data' # relativ path to directory containing the .tif files
+datapath = 'data_test' # relativ path to directory containing the .tif files
 pxarea = 1 #area of 1px (depends on cam and optical setup)
 bitnorm = 2**(-16) # value/bitnorm for display in common 8bit greyscale image
 
@@ -61,20 +62,20 @@ kymograph = st.kymograph(image, com, 120, 0)
 All Files
 """
 dataList=[]
+#dataList[img1,2,3,...][area<float>,center<array,float>,coords<array2d,int>]
 for file in os.listdir(datapath):
     if file.endswith('.tif'):
         image = plt.imread(os.path.join('data',file)) #path cross platform
         filtered = st.smooth(image, usefilter, gaussian, medianblock)
         binary = st.binarify(image) #binary: threshold, fill, remove specks
-        area = sum(binary)*pxarea #number of pixels*area of one pixel
+        area = sum(sum(binary))*pxarea #number of pixels*area of one pixel
         com = ndimg.measurements.center_of_mass(binary) #center of mass coords
         contour=st.find_contour(binary) #pixel coords with false in 3x3
         dataList.append([area,com,contour])
 
-
-
+dataList_json = json.dumps(dataList)
 #------------------ Output ------------------#
-
+"""
 #binarization
 bin_figure= plt.figure()
 plt.subplot(231)
@@ -98,5 +99,5 @@ plt.imshow(image, cmap='pink')
 plt.plot((com[0],com[0]+120),(com[1],com[1]), color='r', linewidth='2')
 plt.subplot(212)
 plt.plot(np.arange(len(kymograph)),kymograph, color='r')
-
+"""
 print('done')
