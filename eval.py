@@ -23,7 +23,7 @@ gaussian = 2 #sigma in 2D for gaussian filter before binarization
 medianblock = 5 # m x m pixel block for median blurr filter (3,5)
 usefilter = 'median' # filter for binarization ('gauss', 'median', 'none')
 singleimagepath = 'fourth.tif' # path to single image for debugging
-datapath = 'data_test' # relativ path to directory containing the .tif files
+datapath = 'data' # relativ path to directory containing the .tif files
 pxwidth = 6.45 #micrometer 10**(-6)
 pxarea = pxwidth**2 #area of 1px (depends on cam and optical setup)
 bitnorm = 2**(-16) # value/bitnorm for display in common 8bit greyscale image
@@ -74,6 +74,7 @@ for file in os.listdir(datapath):
         com = ndimg.measurements.center_of_mass(binary) #center of mass coords
         contour=st.find_contour(binary) #returns list of coords
         dataList.append([area,com,contour])
+        
 
 #Safe Evaluation
 dataList_json = json.dumps(dataList) #convert to json string | dumps(tring)
