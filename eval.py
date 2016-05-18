@@ -107,7 +107,3 @@ plt.plot(np.arange(len(kymograph)),kymograph, color='r')
 print('done')
 
 
-#Eine Kommentar am Ende von Benjamin
-
-print('done') #lukas
-
